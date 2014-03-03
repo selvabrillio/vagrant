@@ -25,9 +25,7 @@ module VagrantPlugins
 
           env[:ui].info "Attempting to start '#{$`}' in '#{$'}'"
 
-          env[:azure_vm_service].start_virtual_machine(
-            $`, $'
-          )
+          env[:azure_vm_service].start_virtual_machine($`, $')
 
           @app.call(env)
         end

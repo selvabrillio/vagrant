@@ -77,6 +77,14 @@ module VagrantPlugins
         end
       end
 
+      def self.action_read_state
+        Vagrant::Action::Builder.new.tap do |b|
+          b.use ConfigValidate
+          b.use ConnectAzure
+          b.use ReadState
+        end
+      end
+
       # This action is called to SSH into the machine
       def self.action_ssh
         Vagrant::Action::Builder.new.tap do |b|

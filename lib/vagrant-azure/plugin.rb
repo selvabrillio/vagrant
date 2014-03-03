@@ -23,7 +23,7 @@ module VagrantPlugins
       machines in Windows Azure.
       DESC
 
-      config(:azure, :provider) do 
+      config(:azure, :provider) do
         require_relative 'config'
         Config
       end
@@ -39,8 +39,12 @@ module VagrantPlugins
       end
 
       def self.setup_i18n
-        # I18n.load_path << File.expand_path('locales/en.yml', Azure.source_root)
-        # I18n.reload!
+        I18n.load_path << File.expand_path(
+          'locales/en.yml',
+          WinAzure.source_root
+        )
+
+        I18n.reload!
       end
 
       def self.setup_logging

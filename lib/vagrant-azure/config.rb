@@ -9,14 +9,9 @@ module VagrantPlugins
     class Config < Vagrant.plugin('2', :config)
       attr_accessor :storage_acct_name
       attr_accessor :storage_access_key
-      attr_accessor :sb_namespace
-      attr_accessor :sb_access_key
-      attr_accessor :sb_issuer
       attr_accessor :mgmt_certificate
-      attr_accessor :subscription_id
       attr_accessor :mgmt_endpoint
-      attr_accessor :sql_auth_mode
-      attr_accessor :sql_mgmt_endpoint
+      attr_accessor :subscription_id
 
       attr_accessor :vm_name
       attr_accessor :vm_user
@@ -37,51 +32,84 @@ module VagrantPlugins
       attr_accessor :add_role
 
       def initialize
-        @storage_access_key    = ENV["AZURE_STORAGE_ACCESS_KEY"]
-        @storage_acct_name     = ENV["AZURE_STORAGE_ACCOUNT"]
-        @sb_namespace          = ENV["AZURE_SERVICEBUS_NAMESPACE"]
-        @sb_access_key         = ENV["AZURE_SERVICEBUS_ACCESS_KEY"]
-        @sb_issuer             = ENV["AZURE_SERVICEBUS_ISSUER"]
-        @mgmt_certificate      = ENV["AZURE_MANAGEMENT_CERTIFICATE"]
-        @subscription_id       = ENV["AZURE_SUBSCRIPTION_ID"]
-        @mgmt_endpoint         = ENV["AZURE_MANAGEMENT_ENDPOINT"]
-        @sql_auth_mode         = ENV["AZURE_SQL_DATABASE_AUTHENTICATION_MODE"]
-        @sql_mgmt_endpoint     = ENV["AZURE_SQL_DATABASE_MANAGEMENT_ENDPOINT"]
+        @storage_acct_name = UNSET_VALUE
+        @storage_access_key = UNSET_VALUE
+        @mgmt_certificate = UNSET_VALUE
+        @mgmt_endpoint = UNSET_VALUE
+        @subscription_id = UNSET_VALUE
+
+        @vm_name = UNSET_VALUE
+        @vm_user = UNSET_VALUE
+        @vm_password = UNSET_VALUE
+        @vm_image = UNSET_VALUE
+        @vm_location = UNSET_VALUE
+        @vm_affinity_group = UNSET_VALUE
+
+        @cloud_service_name = UNSET_VALUE
+        @deployment_name = UNSET_VALUE
+        @tcp_endpoints = UNSET_VALUE
+        @ssh_private_key_file = UNSET_VALUE
+        @ssh_certificate_file = UNSET_VALUE
+        @ssh_port = UNSET_VALUE
+        @vm_size = UNSET_VALUE
+        @winrm_transport = UNSET_VALUE
+        @availability_set_name = UNSET_VALUE
+        @add_role = UNSET_VALUE
       end
 
-      # def merge(other)
-      #   puts "Merging properties..."
+      def finalize!
+        @storage_acct_name = ENV["AZURE_STORAGE_ACCOUNT"] if \
+          @storage_acct_name == UNSET_VALUE
+        @storage_access_key = ENV["AZURE_STORAGE_ACCESS_KEY"] if \
+          @storage_access_key == UNSET_VALUE
+        @mgmt_certificate = ENV["AZURE_MANAGEMENT_CERTIFICATE"] if \
+          @mgmt_certificate == UNSET_VALUE
+        @mgmt_endpoint = ENV["AZURE_MANAGEMENT_ENDPOINT"] if \
+          @mgmt_endpoint == UNSET_VALUE
+        @subscription_id = ENV["AZURE_SUBSCRIPTION_ID"] if \
+          @subscription_id == UNSET_VALUE
 
-      #   @storage_acct_name = other.storage_acct_name || @storage_acct_name
-      #   @storage_access_key = other.storage_access_key || @storage_access_key
-      #   @sb_namespace = other.sb_namespace || @sb_namespace
-      #   @sb_access_key = other.sb_access_key || @sb_access_key
-      #   @sb_issuer = other.sb_issuer || @sb_issuer
-      #   @mgmt_certificate = other.mgmt_certificate || @mgmt_certificate
-      #   @subscription_id = other.subscription_id || @subscription_id
-      #   @mgmt_endpoint = other.mgmt_endpoint || @mgmt_endpoint
-      #   @sql_auth_mode = other.sql_auth_mode || @sql_auth_mode
-      #   @sql_mgmt_endpoint = other.sql_mgmt_endpoint || @sql_mgmt_endpoint
+        @vm_name = nil if @vm_name == UNSET_VALUE
+        @cloud_service_name = nil if @cloud_service_name == UNSET_VALUE
+      end
 
-      #   @vm_name = other.vm_name || @vm_name
-      #   @vm_user = other.vm_user || @vm_user
-      #   @vm_password = other.vm_password || @vm_password
-      #   @vm_image = other.vm_image || @vm_image
-      #   @vm_location = other.vm_location || @vm_location
-      #   @vm_affinity_group = other.vm_affinity_group || @vm_affinity_group
-      #   @cloud_service_name = other.cloud_service_name || @cloud_service_name
-      #   @deployment_name = other.deployment_name || @deployment_name
-      #   @tcp_endpoints = other.tcp_endpoints || @tcp_endpoints
-      #   @ssh_private_key_file = other.ssh_private_key_file || @ssh_private_key_file
-      #   @ssh_certificate_file = other.ssh_certificate_file || @ssh_certificate_file
-      #   @ssh_port = other.ssh_port || @ssh_port
-      #   @vm_size = other.vm_size || @vm_size
-      #   @winrm_transport = other.winrm_transport || @winrm_transport
-      #   @availability_set_name = other.availability_set_name || @availability_set_name
-      #   @add_role = other.add_role || @add_role
+      def merge(other)
+        super.tap do |result|
+          result.storage_account_name = other.storage_acct_name || \
+            self.storage_acct_name
+          result.storage_access_key = other.storage_access_key || \
+            self.storage_access_key
+          result.mgmt_certificate = other.mgmt_certificate || \
+            self.mgmt_certificate
+          result.mgmt_endpoint = other.mgmt_endpoint || \
+            self.mgmt_endpoint
+          result.subscription_id = other.subscription_id || \
+            self.subscription_id
+        end
+      end
 
-      #   puts "Properties merged..."
-      # end
+      def validate(machine)
+        errors = _detected_errors
+
+        # Azure connection properties related validation.
+        errors << "vagrant_azure.subscription_id.requried" if \
+          @subscription_id.nil?
+        errors << "vagrant_azure.mgmt_certificate.requried" if \
+          @mgmt_certificate.nil?
+        errors << "vagrant_azaure.mgmt_endpoint.requried" if \
+          @mgmt_endpoint.nil?
+        errors << "vagrant_azure.storage_acct_name.requried" if\
+          @storage_acct_name.nil?
+        errors << "vagrant_azure.storage_access_key.requried" if\
+          @storage_access_key.nil?
+
+        # Azure Virtual Machine related validation
+        errors << "vagrant_azure.vm_name.required" if @vm_name.nil?
+        errors << "vagrant_azure.cloud_serivce_name.required" if \
+          @cloud_service_name.nil?
+
+        { "Windows Azure Provider" => errors }
+      end
     end
   end
 end

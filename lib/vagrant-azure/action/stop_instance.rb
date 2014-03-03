@@ -15,15 +15,21 @@ module VagrantPlugins
         end
 
         def call(env)
-          env[:machine].id = "#{env[:machine].provider_config.vm_name}@#{env[:machine].provider_config.cloud_service_name}" unless env[:machine].id
-          env[:machine].id =~ /@/
-
-          env[:ui].info "Attempting to stop '#{$`}' in '#{$'}'"
-
-          env[:azure_vm_service].shutdown_virtual_machine(
-            $`, $'
-          )
-
+          if env[:machine].state.id == :StoppedDeallocated
+            env[:ui].info(
+              I18n.t('vagrant_azure.already_status', :status => 'stopped.')
+            )
+          else
+            env[:machine].id =~ /@/
+            env[:ui].info(
+              I18n.t(
+                'vagrant_azure.stopping',
+                :vm_name => $`,
+                :cloud_service_name => $'
+              )
+            )
+            env[:azure_vm_service].shutdown_virtual_machine($`, $')
+          end
           @app.call(env)
         end
       end

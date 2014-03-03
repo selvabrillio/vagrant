@@ -17,17 +17,18 @@ module VagrantPlugins
         def call (env)
           config = env[:machine].provider_config
 
+          env[:ui].warn "Subscription ID: [#{config.subscription_id}]"
+          env[:ui].warn "Mangement Certificate: [#{config.mgmt_certificate}]"
+          env[:ui].warn "Mangement Endpoint: [#{config.mgmt_endpoint}]"
+          env[:ui].warn "Storage Account Name: [#{config.storage_acct_name}]"
+          env[:ui].warn "Storage Access Key: [#{config.storage_access_key}]"
+
           Azure.configure do |c|
+            c.subscription_id                       = config.subscription_id
+            c.management_certificate                = config.mgmt_certificate
+            c.management_endpoint                   = config.mgmt_endpoint
             c.storage_account_name                  = config.storage_acct_name
             c.storage_access_key                    = config.storage_access_key
-
-            c.sb_namespace                          = config.sb_namespace
-            c.sb_access_key                         = config.sb_access_key
-            c.sb_issuer                             = config.sb_issuer
-
-            c.management_certificate                = config.mgmt_certificate
-            c.subscription_id                       = config.subscription_id
-            c.management_endpoint                   = config.mgmt_endpoint
           end
 
           env[:azure_vm_service] = Azure::VirtualMachineManagementService.new
