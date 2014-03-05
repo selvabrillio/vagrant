@@ -20,6 +20,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "minitest"
   s.add_development_dependency "minitest-reporters"
   s.add_development_dependency "mocha"
-  s.add_development_dependency "json"
   s.add_development_dependency "azure"
 end

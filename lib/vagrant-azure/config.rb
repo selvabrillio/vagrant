@@ -70,7 +70,23 @@ module VagrantPlugins
           @subscription_id == UNSET_VALUE
 
         @vm_name = nil if @vm_name == UNSET_VALUE
+        @vm_user = 'vagrantone' if @vm_user == UNSET_VALUE
+        @vm_password = nil if @vm_password == UNSET_VALUE
+        @vm_image = nil if @vm_image == UNSET_VALUE
+        @vm_location = nil if @vm_location == UNSET_VALUE
+        @vm_affinity_group = nil if @vm_affinity_group == UNSET_VALUE
+
         @cloud_service_name = nil if @cloud_service_name == UNSET_VALUE
+        @deployment_name = nil if @deployment_name == UNSET_VALUE
+        @tcp_endpoints = nil if @tcp_endpoints == UNSET_VALUE
+        @ssh_private_key_file = nil if @ssh_private_key_file == UNSET_VALUE
+        @ssh_certificate_file = nil if @ssh_certificate_file == UNSET_VALUE
+        @ssh_port = nil if @ssh_port == UNSET_VALUE
+        @vm_size = nil if @vm_size == UNSET_VALUE
+        @winrm_transport = nil if @winrm_transport == UNSET_VALUE
+        @availability_set_name = nil if @availability_set_name == UNSET_VALUE
+
+        @add_role = false if @add_role == UNSET_VALUE
       end
 
       def merge(other)

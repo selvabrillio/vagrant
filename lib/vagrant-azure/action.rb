@@ -34,7 +34,7 @@ module VagrantPlugins
           b.use Call, DestroyConfirm do |env, b2|
             if env[:result]
               b2.use ConfigValidate
-              b.use Call IsCreated do |env2, b3|
+              b.use Call, IsCreated do |env2, b3|
                 if !env2[:result]
                   b3.use MessageNotCreated
                   next
@@ -139,7 +139,7 @@ module VagrantPlugins
                 end
               end
             else
-              b1.use action_prepare_boot
+              # b1.use action_prepare_boot
               b1.use RunInstance # Launch a new instance
             end
           end
@@ -157,7 +157,7 @@ module VagrantPlugins
             end
 
             b2.use action_halt
-            b2.use Call, WaitForState, :stopped, 120 do |env2, b3|
+            b2.use Call, WaitForState, :StoppedDeallocated, 120 do |env2, b3|
               if env2[:result]
                 b3.use action_up
               end
@@ -174,16 +174,16 @@ module VagrantPlugins
       autoload :MessageAlreadyCreated, action_root.join('message_already_created')
       autoload :MessageNotCreated, action_root.join('message_not_created')
       autoload :MessageWillNotDestroy, action_root.join('message_will_not_destroy')
-      autoload :ReadSSHInfo, action_root.join('read_ssh_info')
+      # autoload :ReadSSHInfo, action_root.join('read_ssh_info')
       autoload :ReadState, action_root.join('read_state')
       autoload :RunInstance, action_root.join('run_instance')
       autoload :StartInstance, action_root.join('start_instance')
       autoload :StopInstance, action_root.join('stop_instance')
-      autoload :SyncFolders, action_root.join('sync_folders')
+      # autoload :SyncFolders, action_root.join('sync_folders')
       autoload :TerminateInstance, action_root.join('terminate_instance')
-      autoload :TimedProvision, action_root.join('timed_provision')
+      # autoload :TimedProvision, action_root.join('timed_provision')
       autoload :WaitForState, action_root.join('wait_for_state')
-      autoload :WarnNetworks, action_root.join('warn_networks')
+      # autoload :WarnNetworks, action_root.join('warn_networks')
     end
   end
 end
