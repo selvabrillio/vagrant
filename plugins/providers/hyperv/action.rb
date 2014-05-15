@@ -219,6 +219,7 @@ module VagrantPlugins
       autoload :SuspendVM, action_root.join("suspend_vm")
       autoload :WaitForIPAddress, action_root.join("wait_for_ip_address")
       autoload :Customize, action_root.join("customize")
+      autoload :MessageWillNotDestroy, action_root.join("message_will_not_destroy")
     end
   end
 end

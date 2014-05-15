@@ -1,4 +1,16 @@
-## 1.6.2 (unreleased)
+## 1.6.3 (unreleased)
+
+IMPROVEMENTS:
+
+  - commands/halt: Halt in reverse order of up, like destroy. [GH-3790]
+
+BUG FIXES:
+
+  - provisioners/puppet: Fix setting facter vars with Windows
+      guests. [GH-3776]
+  - guests/freebsd: Properly register the rsync_pre capability
+
+## 1.6.2 (May 12, 2014)
 
 IMPROVEMENTS:
 
@@ -17,11 +29,20 @@ BUG FIXES:
 
   - core: Hostnames can be one character. [GH-3713]
   - core: Don't lock machines on SSH actions. [GH-3664]
+  - core: Fixed crash when adding a box from Vagrant Cloud that was the
+      same name as a real directory. [GH-3732]
+  - core: Parallelization is more stable, doesn't crash due to to
+      bad locks. [GH-3735]
+  - commands/package: Don't double included files in package. [GH-3637]
+  - guests/linux: Rsync chown ignores symlinks. [GH-3744]
   - provisioners/shell: Fix shell provisioner config validation when the
     `binary` option is set to false [GH-3712]
   - providers/docker: default proxy VM won't use HGFS [GH-3687]
   - providers/docker: fix container linking [GH-3719]
   - providers/docker: Port settings expose to host properly. [GH-3723]
+  - provisioners/puppet: Separate module paths with ';' on Windows. [GH-3731]
+  - synced\_folders\rsync: Copy symlinks as real files. [GH-3734]
+  - synced\_folders/rsync: Remove non-portable '-v' flag from chown. [GH-3743]
 
 ## 1.6.1 (May 7, 2014)
 
