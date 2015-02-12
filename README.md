@@ -1,5 +1,5 @@
 # Vagrant
-
+# Vagrant
 * Website: [http://www.vagrantup.com](http://www.vagrantup.com)
 * Source: [https://github.com/mitchellh/vagrant](https://github.com/mitchellh/vagrant)
 * IRC: `#vagrant` on Freenode
